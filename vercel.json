@@ -1,0 +1,11 @@
+{
+  "rewrites": [
+    { "source": "/staff",    "destination": "/staff.html"  },
+    { "source": "/bots",     "destination": "/bots.html"   },
+    { "source": "/api/stats",    "destination": "/api/stats.js"    },
+    { "source": "/api/lookup",   "destination": "/api/lookup.js"   },
+    { "source": "/api/config",   "destination": "/api/config.js"   },
+    { "source": "/api/recent",   "destination": "/api/recent.js"   },
+    { "source": "/api/transcript", "destination": "/api/transcript.js" }
+  ]
+}

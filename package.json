@@ -1,0 +1,27 @@
+{
+  "name": "grow-alert",
+  "version": "1.0.0",
+  "description": "GrowAlert - Growtopia Scam Awareness",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kawai-uhq/GrowAlert.git"
+  },
+  "keywords": [
+    "growtopia",
+    "scam-awareness",
+    "security"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kawai-uhq/GrowAlert/issues"
+  },
+  "homepage": "https://github.com/kawai-uhq/GrowAlert#readme",
+  "dependencies": {
+    "@vercel/speed-insights": "^2.0.0"
+  }
+}

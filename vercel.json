@@ -2,6 +2,7 @@
   "rewrites": [
     { "source": "/staff",              "destination": "/staff.html"         },
     { "source": "/bots",               "destination": "/bots.html"          },
+    { "source": "/transcript",         "destination": "/transcript.html"    },
     { "source": "/api/stats",          "destination": "/api/stats.js"       },
     { "source": "/api/staff",          "destination": "/api/staff.js"       },
     { "source": "/api/lookup",         "destination": "/api/lookup.js"      },

@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GrowAlert — Growtopia Scam Awareness</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --blue:         #5c85f5;
+      --blue-dim:     #4470e8;
+      --blue-dark:    #1e3a8a;
+      --blue-glow:    rgba(92,133,245,0.15);
+      --bg:           #060d1a;
+      --bg2:          #09142a;
+      --surface:      #0d1d38;
+      --surface2:     #122240;
+      --border:       rgba(92,133,245,0.14);
+      --border-bright:rgba(92,133,245,0.38);
+      --text:         #dde8ff;
+      --text-muted:   #6a85c0;
+      --text-dim:     #2d4080;
+      --red:          #f04040;
+      --red-bg:       rgba(240,64,64,0.1);
+      --yellow:       #f5a524;
+      --yellow-bg:    rgba(245,165,36,0.1);
+      --green:        #34d399;
+    }
+    [data-theme="light"] {
+      --blue:         #2f5de8;
+      --blue-dim:     #1a48d4;
+      --blue-dark:    #1e3a8a;
+      --blue-glow:    rgba(47,93,232,0.1);
+      --bg:           #f0f4ff;
+      --bg2:          #e4ecff;
+      --surface:      #ffffff;
+      --surface2:     #eaf0ff;
+      --border:       rgba(47,93,232,0.14);
+      --border-bright:rgba(47,93,232,0.38);
+      --text:         #0a1540;
+      --text-muted:   #4a65b0;
+      --text-dim:     #a0b0d0;
+      --red:          #cc2222;
+      --red-bg:       rgba(204,34,34,0.08);
+      --yellow:       #b8860b;
+      --yellow-bg:    rgba(184,134,11,0.08);
+      --green:        #16a34a;
+    }
+
+    *, *::before, *::after {
+      margin: 0; padding: 0; box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-user-select: none; user-select: none;
+    }
+    img { pointer-events: none; -webkit-user-drag: none; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 3px; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px;
+      background: rgba(6,13,26,0.9);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      gap: 16px;
+    }
+    [data-theme="light"] nav { background: rgba(240,244,255,0.92); }
+
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; flex-shrink: 0;
+    }
+    .nav-logo-icon {
+      width: 34px; height: 34px; border-radius: 8px;
+      background: var(--blue);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 14px; color: #fff;
+      letter-spacing: -0.5px;
+    }
+    .nav-logo-text {
+      font-weight: 700; font-size: 18px; color: var(--text);
+      letter-spacing: 0.3px;
+    }
+    .nav-logo-text span { color: var(--blue); }
+
+    .nav-center {
+      display: flex; align-items: center; gap: 4px;
+    }
+    @media (max-width: 700px) { .nav-center { display: none; } }
+    .nav-center a {
+      text-decoration: none; color: var(--text-muted);
+      font-size: 14px; font-weight: 500;
+      padding: 6px 14px; border-radius: 8px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .nav-center a:hover { color: var(--text); background: var(--surface); }
+    .nav-center a.active { color: var(--blue); }
+
+    .nav-right { display: flex; align-items: center; gap: 8px; }
+
+    .btn-discord {
+      display: flex; align-items: center; gap: 7px;
+      background: var(--blue); color: #fff;
+      padding: 8px 16px; border-radius: 8px;
+      font-size: 13px; font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s, opacity 0.2s;
+      white-space: nowrap;
+    }
+    .btn-discord:hover { background: var(--blue-dim); }
+    @media (max-width: 480px) { .btn-discord span { display: none; } }
+
+    .theme-btn {
+      width: 34px; height: 34px; border-radius: 8px;
+      background: var(--surface); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .theme-btn:hover { border-color: var(--border-bright); background: var(--surface2); }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 140px 24px 80px;
+      text-align: center;
+      max-width: 760px; margin: 0 auto;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 14px; border-radius: 20px;
+      background: var(--surface); border: 1px solid var(--border);
+      font-size: 12px; font-weight: 500; color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+    .hero-badge span { color: var(--blue); }
+    .hero h1 {
+      font-size: clamp(32px, 6vw, 60px);
+      font-weight: 700; line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 20px;
+      letter-spacing: -1px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--blue);
+    }
+    .hero p {
+      font-size: clamp(15px, 2.5vw, 18px);
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 36px;
+      max-width: 560px; margin-left: auto; margin-right: auto;
+    }
+    .hero-actions {
+      display: flex; flex-wrap: wrap;
+      align-items: center; justify-content: center;
+      gap: 12px; margin-bottom: 60px;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--blue); color: #fff;
+      padding: 12px 24px; border-radius: 10px;
+      font-size: 15px; font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover { background: var(--blue-dim); transform: translateY(-1px); }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: var(--text);
+      padding: 12px 24px; border-radius: 10px;
+      font-size: 15px; font-weight: 500;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    }
+    .btn-outline:hover { border-color: var(--border-bright); background: var(--surface); transform: translateY(-1px); }
+
+    /* Stats row */
+    .stats-row {
+      display: flex; flex-wrap: wrap;
+      justify-content: center; gap: 8px;
+      padding: 0 24px 80px;
+      max-width: 900px; margin: 0 auto;
+    }
+    .stat-chip {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 22px;
+      min-width: 160px; flex: 1;
+    }
+    .stat-icon {
+      width: 38px; height: 38px; border-radius: 8px;
+      background: var(--blue-glow);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .stat-info { min-width: 0; }
+    .stat-value {
+      font-size: 22px; font-weight: 700;
+      color: var(--text); letter-spacing: -0.5px;
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 11px; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-top: 3px;
+    }
+
+    /* ── SECTION WRAPPER ── */
+    .section {
+      padding: 0 24px 80px;
+      max-width: 960px; margin: 0 auto;
+    }
+    .section-header {
+      margin-bottom: 32px;
+    }
+    .section-label {
+      font-size: 11px; font-weight: 600;
+      color: var(--blue); text-transform: uppercase;
+      letter-spacing: 1.5px; margin-bottom: 8px;
+    }
+    .section-title {
+      font-size: clamp(22px, 4vw, 32px);
+      font-weight: 700; color: var(--text);
+      letter-spacing: -0.5px;
+    }
+    .section-sub {
+      font-size: 15px; color: var(--text-muted);
+      margin-top: 8px; line-height: 1.6;
+    }
+
+    /* ── SCAMMER CHECK ── */
+    .check-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+    }
+    .check-input-row {
+      display: flex; gap: 10px; margin-bottom: 16px;
+    }
+    @media (max-width: 540px) { .check-input-row { flex-direction: column; } }
+    .check-input {
+      flex: 1; padding: 12px 16px;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 10px; color: var(--text);
+      font-size: 14px; font-family: 'Inter', sans-serif;
+      outline: none; transition: border-color 0.2s;
+      -webkit-user-select: text; user-select: text;
+    }
+    .check-input::placeholder { color: var(--text-dim); }
+    .check-input:focus { border-color: var(--border-bright); }
+    .check-btn {
+      padding: 12px 24px; border-radius: 10px;
+      background: var(--blue); color: #fff;
+      border: none; cursor: pointer;
+      font-size: 14px; font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.2s, opacity 0.2s;
+      white-space: nowrap;
+    }
+    .check-btn:hover { background: var(--blue-dim); }
+    .check-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .check-captcha { margin-bottom: 16px; }
+    .check-hint {
+      font-size: 12px; color: var(--text-dim);
+      margin-top: 12px;
+    }
+
+    /* result cards */
+    .check-result { display: none; margin-top: 20px; }
+    .check-result.show { display: block; }
+    .result-card {
+      display: flex; align-items: flex-start; gap: 16px;
+      padding: 20px; border-radius: 12px;
+      border: 1px solid;
+      margin-bottom: 12px;
+    }
+    .result-card.safe   { background: rgba(52,211,153,0.08); border-color: rgba(52,211,153,0.25); }
+    .result-card.danger { background: var(--red-bg);         border-color: rgba(240,64,64,0.3);  }
+    .result-card.warning{ background: var(--yellow-bg);      border-color: rgba(245,165,36,0.3); }
+    .result-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+    .result-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .result-desc  { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+    .result-link  {
+      display: inline-block; margin-top: 8px;
+      font-size: 12px; font-weight: 600;
+      text-decoration: none; color: var(--blue);
+    }
+    .result-link:hover { text-decoration: underline; }
+    .result-reason {
+      margin-top: 6px; font-size: 12px; color: var(--text-muted);
+    }
+
+    /* ── RECENT LISTINGS ── */
+    .listings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 620px) { .listings-grid { grid-template-columns: 1fr; } }
+    .listings-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; overflow: hidden;
+    }
+    .listings-head {
+      display: flex; align-items: center; gap: 10px;
+      padding: 16px 20px; border-bottom: 1px solid var(--border);
+    }
+    .listings-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+    .listings-head-title { font-size: 13px; font-weight: 600; color: var(--text); }
+    .listings-head-sub   { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+    .listings-body { padding: 8px 0; }
+    .listing-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 20px; gap: 12px;
+    }
+    .listing-row:hover { background: var(--surface2); }
+    .listing-name  { font-size: 13px; color: var(--text); font-weight: 500; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .listing-reason{ font-size: 11px; color: var(--text-muted); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .listing-num   { font-size: 11px; color: var(--text-dim); font-weight: 600; flex-shrink: 0; }
+    .listings-empty{ padding: 24px 20px; text-align: center; font-size: 13px; color: var(--text-muted); }
+
+    /* ── STAFF GRID ── */
+    .staff-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+    }
+    .staff-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 20px 16px;
+      text-align: center; cursor: pointer;
+      transition: border-color 0.2s, transform 0.15s, background 0.2s;
+      pointer-events: all;
+    }
+    .staff-card * { pointer-events: none; }
+    .staff-card:hover { border-color: var(--border-bright); transform: translateY(-2px); background: var(--surface2); }
+    .staff-avatar-wrap { position: relative; display: inline-block; margin-bottom: 12px; }
+    .staff-avatar {
+      width: 60px; height: 60px; border-radius: 50%;
+      object-fit: cover; display: block;
+    }
+    .staff-status {
+      position: absolute; bottom: 2px; right: 2px;
+      width: 13px; height: 13px; border-radius: 50%;
+      border: 2px solid var(--surface);
+    }
+    .staff-name  { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .staff-role  { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+    .staff-tier-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; padding: 2px 8px;
+      border-radius: 20px; margin-top: 6px; display: inline-block;
+    }
+    .staff-section-title {
+      font-size: 11px; font-weight: 600; color: var(--blue);
+      text-transform: uppercase; letter-spacing: 1.5px;
+      padding: 24px 0 12px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .staff-section-title::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    /* ── FAQ ── */
+    .faq-list { display: flex; flex-direction: column; gap: 8px; }
+    .faq-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .faq-item.open { border-color: var(--border-bright); }
+    .faq-q {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 16px 20px; cursor: pointer;
+      font-size: 14px; font-weight: 600; color: var(--text);
+      transition: color 0.2s;
+    }
+    .faq-q:hover { color: var(--blue); }
+    .faq-chevron {
+      font-size: 12px; color: var(--text-muted); flex-shrink: 0;
+      transition: transform 0.25s;
+    }
+    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+    .faq-a {
+      display: none; padding: 0 20px 16px;
+      font-size: 14px; color: var(--text-muted); line-height: 1.7;
+    }
+    .faq-a a { color: var(--blue); text-decoration: none; }
+    .faq-a a:hover { text-decoration: underline; }
+    .faq-item.open .faq-a { display: block; }
+
+    /* ── PROFILE OVERLAY ── */
+    .overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    .overlay.open { opacity: 1; pointer-events: all; }
+    .profile-modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      width: 100%; max-width: 360px;
+      overflow: hidden;
+      transform: scale(0.95);
+      transition: transform 0.2s;
+    }
+    .overlay.open .profile-modal { transform: scale(1); }
+    .profile-banner {
+      height: 90px; background: var(--blue-dark);
+      position: relative; overflow: hidden;
+    }
+    .profile-banner-img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+    .profile-close-btn {
+      position: absolute; top: 10px; right: 10px;
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(0,0,0,0.5); border: none; cursor: pointer;
+      color: #fff; font-size: 14px; display: flex; align-items: center; justify-content: center;
+    }
+    .profile-avatar-wrap {
+      position: absolute; bottom: -22px; left: 20px;
+      width: 72px; height: 72px;
+    }
+    .profile-avatar {
+      width: 72px; height: 72px; border-radius: 50%;
+      border: 4px solid var(--surface);
+      object-fit: cover; display: block;
+    }
+    .profile-status-dot {
+      position: absolute; bottom: 4px; right: 4px;
+      width: 14px; height: 14px; border-radius: 50%;
+      border: 3px solid var(--surface);
+    }
+    .profile-deco {
+      position: absolute; inset: -4px;
+      width: calc(100% + 8px); height: calc(100% + 8px);
+      pointer-events: none;
+    }
+    .profile-body { padding: 30px 20px 20px; }
+    .profile-name { font-size: 18px; font-weight: 700; color: var(--text); }
+    .profile-username { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+    .profile-role-badge {
+      display: inline-block; padding: 3px 10px;
+      border-radius: 20px; font-size: 11px; font-weight: 600;
+      margin-top: 8px; margin-bottom: 14px;
+    }
+    .profile-custom-status {
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 12px; border-radius: 8px;
+      background: var(--bg2); border: 1px solid var(--border);
+      font-size: 12px; color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+    .profile-divider { height: 1px; background: var(--border); margin: 14px 0; }
+    .profile-section-title {
+      font-size: 10px; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;
+    }
+    .profile-bio { font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 14px; }
+    .profile-dates { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+    .profile-date-row {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; color: var(--text-muted);
+    }
+    .profile-date-icon {
+      width: 26px; height: 26px; border-radius: 6px;
+      background: var(--surface2); display: flex; align-items: center; justify-content: center;
+      font-size: 12px; flex-shrink: 0;
+    }
+    .profile-date-val { color: var(--text); font-weight: 500; }
+    .profile-actions {
+      display: flex; gap: 8px; margin-top: 16px;
+    }
+    .profile-action-btn {
+      flex: 1; padding: 9px 12px;
+      border-radius: 8px; border: 1px solid var(--border);
+      background: var(--surface2); color: var(--text);
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .profile-action-btn:hover { border-color: var(--border-bright); background: var(--bg2); }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(10px);
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text); padding: 10px 20px; border-radius: 10px;
+      font-size: 13px; font-weight: 500;
+      opacity: 0; transition: opacity 0.2s, transform 0.2s;
+      pointer-events: none; z-index: 300; white-space: nowrap;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 24px;
+      text-align: center;
+    }
+    .footer-logo {
+      display: inline-flex; align-items: center; gap: 8px;
+      text-decoration: none; margin-bottom: 12px;
+    }
+    .footer-logo-icon {
+      width: 28px; height: 28px; border-radius: 6px;
+      background: var(--blue);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 12px; color: #fff;
+    }
+    .footer-logo-text { font-weight: 700; font-size: 16px; color: var(--text); }
+    .footer-logo-text span { color: var(--blue); }
+    .footer-links {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 16px;
+      margin-bottom: 16px;
+    }
+    .footer-links a {
+      font-size: 13px; color: var(--text-muted); text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--blue); }
+    .footer-copy { font-size: 12px; color: var(--text-dim); }
+
+    /* ── ANIMATIONS ── */
+    .fade-up {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="/">
+      <div class="nav-logo-icon">GA</div>
+      <span class="nav-logo-text">Grow<span>Alert</span></span>
+    </a>
+    <div class="nav-center">
+      <a href="/" class="active">Home</a>
+      <a href="/bots">Bots</a>
+      <a href="/staff">Staff</a>
+    </div>
+    <div class="nav-right">
+      <a class="btn-discord" href="https://discord.gg/GrowAlert" target="_blank" rel="noopener">
+        <svg width="16" height="12" viewBox="0 0 24 18" fill="currentColor"><path d="M20.32 1.37A19.8 19.8 0 0015.45 0c-.21.38-.46.9-.63 1.3a18.27 18.27 0 00-5.64 0A13.5 13.5 0 008.54 0a19.86 19.86 0 00-4.88 1.38C.52 6.04-.32 10.57.1 15.05a20.04 20.04 0 006.12 3.1c.49-.67.93-1.39 1.3-2.14a12.96 12.96 0 01-2.05-1c.17-.12.34-.26.5-.39a14.27 14.27 0 0012.27 0c.16.13.33.27.5.39-.65.39-1.33.72-2.06 1 .37.75.81 1.47 1.3 2.14a20 20 0 006.13-3.1c.5-5.14-.85-9.63-3.79-13.68zM8.02 12.35c-1.22 0-2.22-1.12-2.22-2.5s.97-2.5 2.22-2.5c1.24 0 2.24 1.12 2.22 2.5 0 1.38-.98 2.5-2.22 2.5zm8.17 0c-1.22 0-2.22-1.12-2.22-2.5s.97-2.5 2.22-2.5c1.24 0 2.24 1.12 2.22 2.5 0 1.38-.97 2.5-2.22 2.5z"/></svg>
+        <span>Join Discord</span>
+      </a>
+      <button class="theme-btn" id="themeBtn" title="Toggle theme">🌙</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero fade-up">
+    <div class="hero-badge">🛡️ <span>GrowAlert</span> — Growtopia Scam Prevention</div>
+    <h1>Protecting the<br><em>Growtopia Community</em></h1>
+    <p>The leading scam awareness platform for Growtopia traders. Check users, report scammers, and trade with confidence.</p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="https://discord.gg/GrowAlert" target="_blank" rel="noopener">
+        Join Discord →
+      </a>
+      <a class="btn-outline" href="#check">Check a User</a>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row fade-up">
+    <div class="stat-chip">
+      <div class="stat-icon">🚫</div>
+      <div class="stat-info">
+        <div class="stat-value" id="statScammers">—</div>
+        <div class="stat-label">Scammers Marked</div>
+      </div>
+    </div>
+    <div class="stat-chip">
+      <div class="stat-icon">⚠️</div>
+      <div class="stat-info">
+        <div class="stat-value" id="statDwc">—</div>
+        <div class="stat-label">DWC Listed</div>
+      </div>
+    </div>
+    <div class="stat-chip">
+      <div class="stat-icon">✅</div>
+      <div class="stat-info">
+        <div class="stat-value" id="statVouches">—</div>
+        <div class="stat-label">Vouches Processed</div>
+      </div>
+    </div>
+    <div class="stat-chip">
+      <div class="stat-icon">👥</div>
+      <div class="stat-info">
+        <div class="stat-value" id="statMembers">—</div>
+        <div class="stat-label">Server Members</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCAMMER CHECK -->
+  <div class="section fade-up" id="check">
+    <div class="section-header">
+      <div class="section-label">Scammer Check</div>
+      <div class="section-title">Is this user safe to trade with?</div>
+      <div class="section-sub">Enter a Discord username, user ID, or GrowID to check their status.</div>
+    </div>
+    <div class="check-card">
+      <div class="check-input-row">
+        <input class="check-input" id="checkInput" type="text" placeholder="Username, User ID, or GrowID…" autocomplete="off" />
+        <button class="check-btn" id="checkBtn" disabled>Check</button>
+      </div>
+      <div class="check-captcha">
+        <div id="hcaptcha-widget"></div>
+      </div>
+      <div class="check-hint">Protected by hCaptcha — solve the challenge above to verify you're human.</div>
+      <div class="check-result" id="checkResult"></div>
+    </div>
+  </div>
+
+  <!-- RECENT LISTINGS -->
+  <div class="section fade-up">
+    <div class="section-header">
+      <div class="section-label">Recent Activity</div>
+      <div class="section-title">Latest listings</div>
+    </div>
+    <div class="listings-grid">
+      <div class="listings-card">
+        <div class="listings-head">
+          <div class="listings-dot" style="background:#f04040"></div>
+          <div>
+            <div class="listings-head-title">Scammers</div>
+            <div class="listings-head-sub">Recently marked</div>
+          </div>
+        </div>
+        <div class="listings-body" id="recentScammers">
+          <div class="listings-empty">Loading…</div>
+        </div>
+      </div>
+      <div class="listings-card">
+        <div class="listings-head">
+          <div class="listings-dot" style="background:#f5a524"></div>
+          <div>
+            <div class="listings-head-title">Deal With Caution</div>
+            <div class="listings-head-sub">Recently flagged</div>
+          </div>
+        </div>
+        <div class="listings-body" id="recentDwc">
+          <div class="listings-empty">Loading…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAFF SECTION -->
+  <div class="section fade-up" id="staff-section">
+    <div class="section-header">
+      <div class="section-label">Team</div>
+      <div class="section-title">Meet the staff</div>
+      <div class="section-sub">Click any card to view their full profile.</div>
+    </div>
+    <div id="staffGrid">
+      <div class="listings-empty" style="padding:40px 0">Loading staff…</div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="section fade-up">
+    <div class="section-header">
+      <div class="section-label">FAQ</div>
+      <div class="section-title">Frequently asked questions</div>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">What is GrowAlert? <span class="faq-chevron">▼</span></div>
+        <div class="faq-a">GrowAlert is a volunteer-run scam prevention service for the Growtopia community. We publicly list scammers and flagged traders so you can make safer deals.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How do I report a scammer? <span class="faq-chevron">▼</span></div>
+        <div class="faq-a">Open a report ticket in our <a href="https://discord.gg/GrowAlert" target="_blank">Discord server</a>. Bring evidence — screenshots, chat logs, and proof of payment.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What does DWC mean? <span class="faq-chevron">▼</span></div>
+        <div class="faq-a">DWC stands for "Deal With Caution". It indicates a user who has displayed risky or questionable trading behaviour but hasn't been confirmed as a scammer.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How do I appeal my listing? <span class="faq-chevron">▼</span></div>
+        <div class="faq-a">Join our <a href="https://discord.gg/GrowAlert" target="_blank">Discord server</a> and open an appeal ticket. Provide evidence supporting your case and a staff member will review it.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can I apply for staff? <span class="faq-chevron">▼</span></div>
+        <div class="faq-a">Yes! Check the <a href="/staff">Staff</a> page or watch for announcements in our Discord when applications are open.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="fade-up">
+    <a class="footer-logo" href="/">
+      <div class="footer-logo-icon">GA</div>
+      <span class="footer-logo-text">Grow<span>Alert</span></span>
+    </a>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/bots">Bots</a>
+      <a href="/staff">Staff</a>
+      <a href="https://discord.gg/GrowAlert" target="_blank">Discord</a>
+    </div>
+    <div class="footer-copy">© 2026 GrowAlert. All rights reserved.</div>
+  </footer>
+
+  <!-- PROFILE OVERLAY -->
+  <div class="overlay" id="profileOverlay">
+    <div class="profile-modal" id="profileModal">
+      <div class="profile-banner" id="profileBannerBg">
+        <img class="profile-banner-img" id="profileBannerImg" src="" alt="" style="display:none" />
+        <button class="profile-close-btn" id="profileCloseBtn">✕</button>
+        <div class="profile-avatar-wrap">
+          <img class="profile-avatar" id="profileAvatar" src="" alt="" />
+          <img class="profile-deco" id="profileDecoration" src="" alt="" style="display:none" />
+          <div class="profile-status-dot" id="profileStatusDot"></div>
+        </div>
+      </div>
+      <div class="profile-body">
+        <div class="profile-name" id="profileName"></div>
+        <div class="profile-username" id="profileUsername"></div>
+        <div class="profile-role-badge" id="profileRoleBadge"></div>
+        <div class="profile-custom-status" id="profileCustomBubble" style="display:none">
+          <span id="profileCustomStatusEmoji"></span>
+          <span id="profileCustomStatus"></span>
+        </div>
+        <div id="profileAboutSection" style="display:none">
+          <div class="profile-section-title">About Me</div>
+          <div class="profile-bio" id="profileBio"></div>
+        </div>
+        <div class="profile-section-title">Member Since</div>
+        <div class="profile-dates">
+          <div class="profile-date-row">
+            <div class="profile-date-icon">🌐</div>
+            <div><span id="profileCreatedAt"></span><br><span style="font-size:11px">Discord</span></div>
+          </div>
+          <div class="profile-date-row" id="profileJoinedRow" style="display:none">
+            <div class="profile-date-icon" id="profileGuildIconWrap">🛡️</div>
+            <div><span id="profileJoinedAt"></span><br><span style="font-size:11px">GrowAlert</span></div>
+          </div>
+        </div>
+        <div class="profile-actions">
+          <button class="profile-action-btn" id="copyUsername">Copy Username</button>
+          <button class="profile-action-btn" id="copyUserId">Copy ID</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ── Theme ────────────────────────────────────────────────────────────
+    const themeBtn = document.getElementById('themeBtn');
+    const saved    = localStorage.getItem('ga-theme') || 'dark';
+    applyTheme(saved);
+    function applyTheme(t) {
+      document.documentElement.setAttribute('data-theme', t);
+      localStorage.setItem('ga-theme', t);
+      themeBtn.textContent = t === 'dark' ? '🌙' : '☀️';
+    }
+    themeBtn.addEventListener('click', () => {
+      applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+
+    // ── Scroll animations ────────────────────────────────────────────────
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+
+    // ── Stats ────────────────────────────────────────────────────────────
+    async function loadStats() {
+      try {
+        const data = await fetch('/api/stats').then(r => r.json());
+        if (data.scammers !== undefined) document.getElementById('statScammers').textContent = data.scammers.toLocaleString();
+        if (data.dwc      !== undefined) document.getElementById('statDwc').textContent      = data.dwc.toLocaleString();
+        if (data.vouches  !== undefined) document.getElementById('statVouches').textContent  = data.vouches.toLocaleString();
+        if (data.members  !== undefined) document.getElementById('statMembers').textContent  = data.members.toLocaleString();
+      } catch {}
+    }
+    loadStats();
+
+    // ── Recent listings ──────────────────────────────────────────────────
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function renderListings(id, items) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (!items?.length) { el.innerHTML = '<div class="listings-empty">No entries yet.</div>'; return; }
+      el.innerHTML = items.map(item => `
+        <div class="listing-row">
+          <div style="min-width:0;flex:1">
+            <div class="listing-name" style="${item.unlisted ? 'opacity:0.4;text-decoration:line-through' : ''}">${esc(item.name || item.entry || '')}</div>
+            ${item.reason ? `<div class="listing-reason">📋 ${esc(item.reason)}</div>` : ''}
+          </div>
+          <div class="listing-num">#${item.serial || '?'}</div>
+        </div>`).join('');
+    }
+    async function loadListings() {
+      try {
+        const data = await fetch('/api/recent').then(r => r.json());
+        renderListings('recentScammers', data.scammers);
+        renderListings('recentDwc', data.dwc);
+      } catch {
+        document.getElementById('recentScammers').innerHTML = '<div class="listings-empty">Could not load.</div>';
+        document.getElementById('recentDwc').innerHTML      = '<div class="listings-empty">Could not load.</div>';
+      }
+    }
+    loadListings();
+
+    // ── hCaptcha ─────────────────────────────────────────────────────────
+    let captchaToken  = null;
+    let captchaWidget = null;
+    const checkBtn    = document.getElementById('checkBtn');
+
+    async function renderCaptcha() {
+      try {
+        const cfg = await fetch('/api/config').then(r => r.json());
+        const key  = cfg.hcaptchaSiteKey;
+        if (!key) { checkBtn.disabled = false; return; }
+        if (window.hcaptcha) {
+          captchaWidget = window.hcaptcha.render('hcaptcha-widget', {
+            sitekey: key,
+            theme: document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light',
+            callback: tok => { captchaToken = tok; checkBtn.disabled = false; },
+            'expired-callback': () => { captchaToken = null; checkBtn.disabled = true; },
+          });
+        }
+      } catch { checkBtn.disabled = false; }
+    }
+    window.addEventListener('load', () => setTimeout(renderCaptcha, 300));
+
+    // ── Scammer check ────────────────────────────────────────────────────
+    const checkInput  = document.getElementById('checkInput');
+    const checkResult = document.getElementById('checkResult');
+
+    async function doCheck() {
+      const q = checkInput.value.trim();
+      if (!q) return;
+      checkBtn.disabled = true;
+      checkBtn.textContent = 'Checking…';
+      checkResult.className = 'check-result';
+      try {
+        const params = new URLSearchParams({ q });
+        if (captchaToken) params.set('token', captchaToken);
+        const data = await fetch(`/api/lookup?${params}`).then(r => r.json());
+        let html = '';
+        if (data.error) {
+          html = `<div class="result-card warning"><div class="result-icon">⚠️</div><div><div class="result-title">Error</div><div class="result-desc">${esc(data.error)}</div></div></div>`;
+        } else if (!data.scammer && !data.dwc) {
+          html = `<div class="result-card safe"><div class="result-icon">✅</div><div><div class="result-title">No listings found</div><div class="result-desc"><strong>${esc(q)}</strong> has no scammer or DWC entries in our database. Always verify independently before trading.</div></div></div>`;
+        }
+        if (data.scammer) {
+          const r = extractReason(data.scammer.entry);
+          html += `<div class="result-card danger"><div class="result-icon">🚫</div><div><div class="result-title">SCAMMER</div><div class="result-desc"><strong>${esc(q)}</strong> is listed as a confirmed scammer. Do not trade with this user.</div>${r ? `<div class="result-reason">📋 <strong>Reason:</strong> ${esc(r)}</div>` : ''}<a class="result-link" href="${data.scammer.url}" target="_blank" rel="noopener">View Listing ↗</a></div></div>`;
+        }
+        if (data.dwc) {
+          const r = extractReason(data.dwc.entry);
+          html += `<div class="result-card warning"><div class="result-icon">⚠️</div><div><div class="result-title">Deal With Caution</div><div class="result-desc"><strong>${esc(q)}</strong> is flagged as DWC. Proceed with caution.</div>${r ? `<div class="result-reason">📋 <strong>Reason:</strong> ${esc(r)}</div>` : ''}<a class="result-link" href="${data.dwc.url}" target="_blank" rel="noopener" style="color:var(--yellow)">View Listing ↗</a></div></div>`;
+        }
+        checkResult.className = 'check-result show';
+        checkResult.innerHTML = html;
+        captchaToken = null;
+        if (window.hcaptcha && captchaWidget !== null) window.hcaptcha.reset(captchaWidget);
+        checkBtn.disabled = true;
+      } catch {
+        checkResult.className = 'check-result show';
+        checkResult.innerHTML = `<div class="result-card warning"><div class="result-icon">⚠️</div><div><div class="result-title">Connection Error</div><div class="result-desc">Could not reach the server. Check your connection and try again.</div></div></div>`;
+      }
+      checkBtn.textContent = 'Check';
+    }
+
+    checkBtn.addEventListener('click', doCheck);
+    checkInput.addEventListener('keydown', e => { if (e.key === 'Enter') doCheck(); });
+    function extractReason(entry) {
+      if (!entry) return null;
+      const m = entry.match(/\(([^)]+)\)\s*$/);
+      return m ? m[1].trim() : null;
+    }
+
+    // ── Staff ────────────────────────────────────────────────────────────
+    const STATUS_COLORS = { online: '#23a55a', idle: '#f0b232', dnd: '#f23f43', offline: '#80848e' };
+    const TIER_COLOR    = { owner: '#f5a524', dev: '#5c85f5', admin: '#eb459e', mod: '#5c85f5', staff: '#5c85f5', partner: '#1abc9c', default: '#5c85f5' };
+    window._staffFlat = [];
+
+    async function loadStaff() {
+      const grid = document.getElementById('staffGrid');
+      try {
+        const data = await fetch('/api/staff').then(r => r.json());
+        if (!data.tiers?.length && !data.members?.length) { grid.innerHTML = '<div class="listings-empty" style="padding:40px 0">No staff data.</div>'; return; }
+        window._guildIcon = data.guildIcon || null;
+        let html = '';
+        let idx  = 0;
+        const tiers = data.tiers || [{ name: 'Staff', color: null, members: data.members || [] }];
+        for (const tier of tiers) {
+          if (!tier.members?.length) continue;
+          const col = tier.color && tier.color !== '#000000' ? tier.color : '#5c85f5';
+          html += `<div class="staff-section-title" style="color:${col}">${esc(tier.name || 'Staff')}</div><div class="staff-grid">`;
+          for (const m of tier.members) {
+            window._staffFlat[idx] = { ...m, tier: tier.name };
+            const status = m.status || 'offline';
+            const rc     = m.roleColor && m.roleColor !== '#000000' ? m.roleColor : col;
+            html += `
+              <div class="staff-card" data-idx="${idx}">
+                <div class="staff-avatar-wrap">
+                  <img class="staff-avatar" src="${m.avatar || ''}" alt="${esc(m.name || '')}" loading="lazy" />
+                  <div class="staff-status" style="background:${STATUS_COLORS[status] || '#80848e'}"></div>
+                </div>
+                <div class="staff-name">${esc(m.name || m.username || '')}</div>
+                <div class="staff-role" style="color:${rc}">${esc(m.role || tier.name)}</div>
+              </div>`;
+            idx++;
+          }
+          html += '</div>';
+        }
+        grid.innerHTML = html;
+      } catch { grid.innerHTML = '<div class="listings-empty" style="padding:40px 0">Could not load staff.</div>'; }
+    }
+    loadStaff();
+
+    // ── Profile popup ────────────────────────────────────────────────────
+    const overlay     = document.getElementById('profileOverlay');
+    const closeBtn    = document.getElementById('profileCloseBtn');
+    const toast       = document.getElementById('toast');
+    let currentMember = null;
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+    function fmtDate(iso) {
+      if (!iso) return '';
+      return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+    function openProfile(m) {
+      currentMember = m;
+      const rc = m.roleColor && m.roleColor !== '#000000' ? m.roleColor : '#5c85f5';
+      const bannerImg = document.getElementById('profileBannerImg');
+      const bannerBg  = document.getElementById('profileBannerBg');
+      if (m.banner) { bannerImg.src = m.banner; bannerImg.style.display = 'block'; bannerBg.style.background = ''; }
+      else { bannerImg.style.display = 'none'; bannerBg.style.background = `linear-gradient(135deg,${rc}88,${rc}22)`; }
+      document.getElementById('profileAvatar').src = m.avatar || '';
+      const deco = document.getElementById('profileDecoration');
+      if (m.decoration) { deco.src = m.decoration; deco.style.display = 'block'; } else deco.style.display = 'none';
+      document.getElementById('profileStatusDot').style.background = STATUS_COLORS[m.status || 'offline'] || '#80848e';
+      document.getElementById('profileName').textContent = m.name || '';
+      document.getElementById('profileUsername').textContent = '@' + (m.username || m.name || '');
+      const badge = document.getElementById('profileRoleBadge');
+      badge.textContent = m.role || m.tier || '';
+      badge.style.cssText = `background:${rc}22;color:${rc};border:1px solid ${rc}55`;
+      const bio = document.getElementById('profileAboutSection');
+      if (m.bio) { document.getElementById('profileBio').textContent = m.bio; bio.style.display = 'block'; } else bio.style.display = 'none';
+      const cs = m.customStatus;
+      const bubble = document.getElementById('profileCustomBubble');
+      if (cs && (cs.text || cs.emoji)) {
+        document.getElementById('profileCustomStatus').textContent = cs.text || '';
+        const emoji = document.getElementById('profileCustomStatusEmoji');
+        if (cs.emojiUrl) emoji.innerHTML = `<img src="${cs.emojiUrl}" style="width:14px;height:14px;object-fit:contain" />`;
+        else if (cs.emoji) emoji.textContent = cs.emoji;
+        else emoji.innerHTML = '';
+        bubble.style.display = 'flex';
+      } else bubble.style.display = 'none';
+      document.getElementById('profileCreatedAt').textContent = fmtDate(m.createdAt);
+      const joinRow = document.getElementById('profileJoinedRow');
+      if (m.joinedAt) {
+        document.getElementById('profileJoinedAt').textContent = fmtDate(m.joinedAt);
+        const iconWrap = document.getElementById('profileGuildIconWrap');
+        if (window._guildIcon) iconWrap.innerHTML = `<img src="${window._guildIcon}" style="width:16px;height:16px;border-radius:4px;object-fit:cover" />`;
+        joinRow.style.display = 'flex';
+      } else joinRow.style.display = 'none';
+      overlay.classList.add('open');
+    }
+    function closeProfile() { overlay.classList.remove('open'); currentMember = null; }
+
+    closeBtn.addEventListener('click', closeProfile);
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeProfile(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeProfile(); });
+
+    document.getElementById('staffGrid').addEventListener('click', e => {
+      const card = e.target.closest('.staff-card');
+      if (!card) return;
+      const m = window._staffFlat[parseInt(card.dataset.idx)];
+      if (m) openProfile(m);
+    });
+
+    document.getElementById('copyUsername').addEventListener('click', () => {
+      if (!currentMember) return;
+      navigator.clipboard.writeText(currentMember.username || currentMember.name).then(() => showToast('✓ Username copied!')).catch(() => showToast('✓ ' + (currentMember.username || currentMember.name)));
+    });
+    document.getElementById('copyUserId').addEventListener('click', () => {
+      if (!currentMember) return;
+      navigator.clipboard.writeText(currentMember.id).then(() => showToast('✓ ID copied!')).catch(() => showToast('✓ ' + currentMember.id));
+    });
+
+    // ── Disable right-click / devtools ───────────────────────────────────
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('dragstart',   e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && ['s','u','p'].includes(e.key.toLowerCase())) e.preventDefault();
+      if (e.key === 'F12') e.preventDefault();
+    });
+  </script>
+</body>
+</html>

@@ -104,7 +104,7 @@
 
   <nav>
     <a class="nav-logo" href="/">
-      <div class="nav-logo-icon">GA</div>
+      <div class="nav-logo-icon" id="navLogoIcon">GA</div>
       <span class="nav-logo-text">Grow<span>Alert</span></span>
     </a>
     <div class="nav-center">
@@ -233,6 +233,25 @@
       } catch {}
     }
     loadStats();
+
+    // Load guild icon for nav logo
+    async function loadIcons() {
+      try {
+        const data = await fetch('/api/icons').then(r => r.json());
+        if (data.guildIcon) {
+          const el = document.getElementById('navLogoIcon');
+          el.innerHTML = '';
+          el.style.background = 'transparent';
+          el.style.padding = '0';
+          el.style.overflow = 'hidden';
+          const img = document.createElement('img');
+          img.src = data.guildIcon;
+          img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:8px;display:block;';
+          el.appendChild(img);
+        }
+      } catch {}
+    }
+    loadIcons();
 
     // FAQ accordion
     document.querySelectorAll('.faq-q').forEach(q => {

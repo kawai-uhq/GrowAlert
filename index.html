@@ -6,7 +6,6 @@
   <title>GrowAlert — Growtopia Scam Awareness</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -247,70 +246,7 @@
       margin-top: 8px; line-height: 1.6;
     }
 
-    /* ── SCAMMER CHECK ── */
-    .check-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 32px;
-    }
-    .check-input-row {
-      display: flex; gap: 10px; margin-bottom: 16px;
-    }
-    @media (max-width: 540px) { .check-input-row { flex-direction: column; } }
-    .check-input {
-      flex: 1; padding: 12px 16px;
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: 10px; color: var(--text);
-      font-size: 14px; font-family: 'Inter', sans-serif;
-      outline: none; transition: border-color 0.2s;
-      -webkit-user-select: text; user-select: text;
-    }
-    .check-input::placeholder { color: var(--text-dim); }
-    .check-input:focus { border-color: var(--border-bright); }
-    .check-btn {
-      padding: 12px 24px; border-radius: 10px;
-      background: var(--blue); color: #fff;
-      border: none; cursor: pointer;
-      font-size: 14px; font-weight: 600;
-      font-family: 'Inter', sans-serif;
-      transition: background 0.2s, opacity 0.2s;
-      white-space: nowrap;
-    }
-    .check-btn:hover { background: var(--blue-dim); }
-    .check-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .check-captcha { margin-bottom: 16px; }
-    .check-hint {
-      font-size: 12px; color: var(--text-dim);
-      margin-top: 12px;
-    }
 
-    /* result cards */
-    .check-result { display: none; margin-top: 20px; }
-    .check-result.show { display: block; }
-    .result-card {
-      display: flex; align-items: flex-start; gap: 16px;
-      padding: 20px; border-radius: 12px;
-      border: 1px solid;
-      margin-bottom: 12px;
-    }
-    .result-card.safe   { background: rgba(52,211,153,0.08); border-color: rgba(52,211,153,0.25); }
-    .result-card.danger { background: var(--red-bg);         border-color: rgba(240,64,64,0.3);  }
-    .result-card.warning{ background: var(--yellow-bg);      border-color: rgba(245,165,36,0.3); }
-    .result-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
-    .result-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-    .result-desc  { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
-    .result-link  {
-      display: inline-block; margin-top: 8px;
-      font-size: 12px; font-weight: 600;
-      text-decoration: none; color: var(--blue);
-    }
-    .result-link:hover { text-decoration: underline; }
-    .result-reason {
-      margin-top: 6px; font-size: 12px; color: var(--text-muted);
-    }
-
-    /* ── RECENT LISTINGS ── */
     .listings-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -576,7 +512,6 @@
       <a class="btn-primary" href="https://discord.gg/GrowAlert" target="_blank" rel="noopener">
         Join Discord →
       </a>
-      <a class="btn-outline" href="#check">Check a User</a>
     </div>
   </div>
 
@@ -608,60 +543,6 @@
       <div class="stat-info">
         <div class="stat-value" id="statMembers">—</div>
         <div class="stat-label">Server Members</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SCAMMER CHECK -->
-  <div class="section fade-up" id="check">
-    <div class="section-header">
-      <div class="section-label">Scammer Check</div>
-      <div class="section-title">Is this user safe to trade with?</div>
-      <div class="section-sub">Enter a Discord username, user ID, or GrowID to check their status.</div>
-    </div>
-    <div class="check-card">
-      <div class="check-input-row">
-        <input class="check-input" id="checkInput" type="text" placeholder="Username, User ID, or GrowID…" autocomplete="off" />
-        <button class="check-btn" id="checkBtn" disabled>Check</button>
-      </div>
-      <div class="check-captcha">
-        <div id="hcaptcha-widget"></div>
-      </div>
-      <div class="check-hint">Protected by hCaptcha — solve the challenge above to verify you're human.</div>
-      <div class="check-result" id="checkResult"></div>
-    </div>
-  </div>
-
-  <!-- RECENT LISTINGS -->
-  <div class="section fade-up">
-    <div class="section-header">
-      <div class="section-label">Recent Activity</div>
-      <div class="section-title">Latest listings</div>
-    </div>
-    <div class="listings-grid">
-      <div class="listings-card">
-        <div class="listings-head">
-          <div class="listings-dot" style="background:#f04040"></div>
-          <div>
-            <div class="listings-head-title">Scammers</div>
-            <div class="listings-head-sub">Recently marked</div>
-          </div>
-        </div>
-        <div class="listings-body" id="recentScammers">
-          <div class="listings-empty">Loading…</div>
-        </div>
-      </div>
-      <div class="listings-card">
-        <div class="listings-head">
-          <div class="listings-dot" style="background:#f5a524"></div>
-          <div>
-            <div class="listings-head-title">Deal With Caution</div>
-            <div class="listings-head-sub">Recently flagged</div>
-          </div>
-        </div>
-        <div class="listings-body" id="recentDwc">
-          <div class="listings-empty">Loading…</div>
-        </div>
       </div>
     </div>
   </div>
@@ -732,79 +613,9 @@
     }, { threshold: 0.1 });
     document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
 
-    // ── Stats ────────────────────────────────────────────────────────────
-    async function loadStats() {
-      try {
-        const data = await fetch('/api/stats').then(r => r.json());
-        if (data.scammers !== undefined) document.getElementById('statScammers').textContent = data.scammers.toLocaleString();
-        if (data.dwc      !== undefined) document.getElementById('statDwc').textContent      = data.dwc.toLocaleString();
-        if (data.vouches  !== undefined) document.getElementById('statVouches').textContent  = data.vouches.toLocaleString();
-        if (data.members  !== undefined) document.getElementById('statMembers').textContent  = data.members.toLocaleString();
-      } catch {}
-    }
     loadStats();
 
-    // ── Recent listings ──────────────────────────────────────────────────
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-    function renderListings(id, items) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      if (!items?.length) { el.innerHTML = '<div class="listings-empty">No entries yet.</div>'; return; }
-      el.innerHTML = items.map(item => `
-        <div class="listing-row">
-          <div style="min-width:0;flex:1">
-            <div class="listing-name" style="${item.unlisted ? 'opacity:0.4;text-decoration:line-through' : ''}">${esc(item.name || item.entry || '')}</div>
-            ${item.reason ? `<div class="listing-reason">📋 ${esc(item.reason)}</div>` : ''}
-          </div>
-          <div class="listing-num">#${item.serial || '?'}</div>
-        </div>`).join('');
-    }
-    async function loadListings() {
-      try {
-        const data = await fetch('/api/recent').then(r => r.json());
-        renderListings('recentScammers', data.scammers);
-        renderListings('recentDwc', data.dwc);
-      } catch {
-        document.getElementById('recentScammers').innerHTML = '<div class="listings-empty">Could not load.</div>';
-        document.getElementById('recentDwc').innerHTML      = '<div class="listings-empty">Could not load.</div>';
-      }
-    }
-    loadListings();
 
-    // ── hCaptcha ─────────────────────────────────────────────────────────
-    let captchaToken  = null;
-    let captchaWidget = null;
-    const checkBtn    = document.getElementById('checkBtn');
-
-    async function renderCaptcha() {
-      try {
-        const cfg = await fetch('/api/config').then(r => r.json());
-        const key  = cfg.hcaptchaSiteKey;
-        if (!key) { checkBtn.disabled = false; return; }
-        if (window.hcaptcha) {
-          captchaWidget = window.hcaptcha.render('hcaptcha-widget', {
-            sitekey: key,
-            theme: document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light',
-            callback: tok => { captchaToken = tok; checkBtn.disabled = false; },
-            'expired-callback': () => { captchaToken = null; checkBtn.disabled = true; },
-          });
-        }
-      } catch { checkBtn.disabled = false; }
-    }
-    window.addEventListener('load', () => setTimeout(renderCaptcha, 300));
-
-    // ── Scammer check ────────────────────────────────────────────────────
-    const checkInput  = document.getElementById('checkInput');
-    const checkResult = document.getElementById('checkResult');
-
-    async function doCheck() {
-      const q = checkInput.value.trim();
-      if (!q) return;
-      checkBtn.disabled = true;
-      checkBtn.textContent = 'Checking…';
-      checkResult.className = 'check-result';
-      try {
-        const params = new URLSearchParams({ q });
         if (captchaToken) params.set('token', captchaToken);
         const data = await fetch(`/api/lookup?${params}`).then(r => r.json());
         let html = '';
@@ -859,6 +670,19 @@
       if ((e.ctrlKey || e.metaKey) && ['s','u','p'].includes(e.key.toLowerCase())) e.preventDefault();
       if (e.key === 'F12') e.preventDefault();
     });
+
+    // ── FAQ toggle ───────────────────────────────────────────────────────
+    document.querySelectorAll('.faq-q').forEach(q => {
+      q.addEventListener('click', () => {
+        const item = q.closest('.faq-item');
+        const isOpen = item.classList.contains('open');
+        // Close all
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+        // Toggle clicked
+        if (!isOpen) item.classList.add('open');
+      });
+    });
+
   </script>
 </body>
 </html>

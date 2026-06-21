@@ -97,21 +97,7 @@
     .bot-btn-outline { flex:1; display:flex; align-items:center; justify-content:center; background:transparent; color:var(--text-muted); padding:10px; border-radius:9px; font-size:13px; font-weight:500; text-decoration:none; border:1px solid var(--border); transition:border-color 0.2s,color 0.2s; }
     .bot-btn-outline:hover { border-color:var(--border-bright); color:var(--text); }
 
-    /* RECENT LISTINGS */
-    .listings-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-    @media (max-width:620px) { .listings-grid { grid-template-columns:1fr; } }
-    .listings-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden; }
-    .listings-head { display:flex; align-items:center; gap:10px; padding:16px 20px; border-bottom:1px solid var(--border); }
-    .listings-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
-    .listings-head-title { font-size:13px; font-weight:600; color:var(--text); }
-    .listings-head-sub { font-size:11px; color:var(--text-muted); margin-top:1px; }
-    .listings-body { padding:8px 0; }
-    .listing-row { display:flex; align-items:center; justify-content:space-between; padding:10px 20px; gap:12px; }
-    .listing-row:hover { background:var(--surface2); }
-    .listing-name { font-size:13px; color:var(--text); font-weight:500; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-    .listing-reason { font-size:11px; color:var(--text-muted); margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-    .listing-num { font-size:11px; color:var(--text-dim); font-weight:600; flex-shrink:0; }
-    .listings-empty { padding:24px 20px; text-align:center; font-size:13px; color:var(--text-muted); }
+
 
     .section-header { margin-bottom:24px; }
     .section-label { font-size:11px; font-weight:600; color:var(--blue); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:8px; }
@@ -215,36 +201,6 @@
     </div>
   </div>
 
-  <!-- RECENT LISTINGS -->
-  <div class="section fade-up">
-    <div class="section-header">
-      <div class="section-label">Recent Activity</div>
-      <div class="section-title">Latest listings</div>
-    </div>
-    <div class="listings-grid">
-      <div class="listings-card">
-        <div class="listings-head">
-          <div class="listings-dot" style="background:#f04040"></div>
-          <div>
-            <div class="listings-head-title">Scammers</div>
-            <div class="listings-head-sub">Recently marked</div>
-          </div>
-        </div>
-        <div class="listings-body" id="recentScammers"><div class="listings-empty">Loading…</div></div>
-      </div>
-      <div class="listings-card">
-        <div class="listings-head">
-          <div class="listings-dot" style="background:#f5a524"></div>
-          <div>
-            <div class="listings-head-title">Deal With Caution</div>
-            <div class="listings-head-sub">Recently flagged</div>
-          </div>
-        </div>
-        <div class="listings-body" id="recentDwc"><div class="listings-empty">Loading…</div></div>
-      </div>
-    </div>
-  </div>
-
   <footer class="fade-up">
     <a class="footer-logo" href="/">
       <div class="footer-logo-icon">GA</div>
@@ -267,18 +223,6 @@
     const obs = new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:0.1});
     document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el));
 
-    function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-    function renderListings(id,items){
-      const el=document.getElementById(id);
-      if(!el)return;
-      if(!items?.length){el.innerHTML='<div class="listings-empty">No entries yet.</div>';return;}
-      el.innerHTML=items.map(item=>`<div class="listing-row"><div style="min-width:0;flex:1"><div class="listing-name" style="${item.unlisted?'opacity:0.4;text-decoration:line-through':''}">${esc(item.name||item.entry||'')}</div>${item.reason?`<div class="listing-reason">📋 ${esc(item.reason)}</div>`:''}</div><div class="listing-num">#${item.serial||'?'}</div></div>`).join('');
-    }
-    async function loadListings(){
-      try{const data=await fetch('/api/recent').then(r=>r.json());renderListings('recentScammers',data.scammers);renderListings('recentDwc',data.dwc);}
-      catch{document.getElementById('recentScammers').innerHTML='<div class="listings-empty">Could not load.</div>';document.getElementById('recentDwc').innerHTML='<div class="listings-empty">Could not load.</div>';}
-    }
-    loadListings();
     document.addEventListener('contextmenu',e=>e.preventDefault());
     document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&['s','u','p'].includes(e.key.toLowerCase()))e.preventDefault();if(e.key==='F12')e.preventDefault();});
   </script>

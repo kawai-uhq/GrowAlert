@@ -876,14 +876,14 @@
         let html = '';
         if (data.error) {
           html = `<div class="result-card warning"><div class="result-icon">⚠️</div><div><div class="result-title">Error</div><div class="result-desc">${esc(data.error)}</div></div></div>`;
-        } else if (!data.scammer && !data.dwc) {
+        } else if (!data.scammer?.listed && !data.dwc?.listed) {
           html = `<div class="result-card safe"><div class="result-icon">✅</div><div><div class="result-title">No listings found</div><div class="result-desc"><strong>${esc(q)}</strong> has no scammer or DWC entries in our database. Always verify independently before trading.</div></div></div>`;
         }
-        if (data.scammer) {
+        if (data.scammer?.listed) {
           const r = extractReason(data.scammer.entry);
           html += `<div class="result-card danger"><div class="result-icon">🚫</div><div><div class="result-title">SCAMMER</div><div class="result-desc"><strong>${esc(q)}</strong> is listed as a confirmed scammer. Do not trade with this user.</div>${r ? `<div class="result-reason">📋 <strong>Reason:</strong> ${esc(r)}</div>` : ''}<a class="result-link" href="${data.scammer.url}" target="_blank" rel="noopener">View Listing ↗</a></div></div>`;
         }
-        if (data.dwc) {
+        if (data.dwc?.listed) {
           const r = extractReason(data.dwc.entry);
           html += `<div class="result-card warning"><div class="result-icon">⚠️</div><div><div class="result-title">Deal With Caution</div><div class="result-desc"><strong>${esc(q)}</strong> is flagged as DWC. Proceed with caution.</div>${r ? `<div class="result-reason">📋 <strong>Reason:</strong> ${esc(r)}</div>` : ''}<a class="result-link" href="${data.dwc.url}" target="_blank" rel="noopener" style="color:var(--yellow)">View Listing ↗</a></div></div>`;
         }
@@ -916,19 +916,20 @@
       const grid = document.getElementById('staffGrid');
       try {
         const data = await fetch('/api/staff').then(r => r.json());
-        if (!data.tiers?.length && !data.members?.length) { grid.innerHTML = '<div class="listings-empty" style="padding:40px 0">No staff data.</div>'; return; }
+        // API returns data.staff (array of role groups), not data.tiers
+        const staffGroups = data.staff;
+        if (!staffGroups?.length) { grid.innerHTML = '<div class="listings-empty" style="padding:40px 0">No staff data.</div>'; return; }
         window._guildIcon = data.guildIcon || null;
-        let html = '';
-        let idx  = 0;
-        const tiers = data.tiers || [{ name: 'Staff', color: null, members: data.members || [] }];
-        for (const tier of tiers) {
-          if (!tier.members?.length) continue;
-          const col = tier.color && tier.color !== '#000000' ? tier.color : '#5c85f5';
-          html += `<div class="staff-section-title" style="color:${col}">${esc(tier.name || 'Staff')}</div><div class="staff-grid">`;
-          for (const m of tier.members) {
-            window._staffFlat[idx] = { ...m, tier: tier.name };
+        let html = '', idx = 0;
+        for (const group of staffGroups) {
+          if (!group.members?.length) continue;
+          const col = group.color && group.color !== '#000000' ? group.color : '#5c85f5';
+          html += `<div class="staff-section-title" style="color:${col}">${esc(group.name || 'Staff')}</div><div class="staff-grid">`;
+          for (const m of group.members) {
+            // Attach role info from the group since member objects don't carry it
+            window._staffFlat[idx] = { ...m, role: group.name, roleColor: group.color, tier: group.tier };
             const status = m.status || 'offline';
-            const rc     = m.roleColor && m.roleColor !== '#000000' ? m.roleColor : col;
+            const rc     = group.color && group.color !== '#000000' ? group.color : col;
             html += `
               <div class="staff-card" data-idx="${idx}">
                 <div class="staff-avatar-wrap">
@@ -936,14 +937,14 @@
                   <div class="staff-status" style="background:${STATUS_COLORS[status] || '#80848e'}"></div>
                 </div>
                 <div class="staff-name">${esc(m.name || m.username || '')}</div>
-                <div class="staff-role" style="color:${rc}">${esc(m.role || tier.name)}</div>
+                <div class="staff-role" style="color:${rc}">${esc(group.name)}</div>
               </div>`;
             idx++;
           }
           html += '</div>';
         }
         grid.innerHTML = html;
-      } catch { grid.innerHTML = '<div class="listings-empty" style="padding:40px 0">Could not load staff.</div>'; }
+      } catch (err) { grid.innerHTML = '<div class="listings-empty" style="padding:40px 0">Could not load staff.</div>'; }
     }
     loadStaff();
 

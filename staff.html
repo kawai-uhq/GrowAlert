@@ -206,28 +206,39 @@
 
     function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
-    async function loadStaff(){
-      const grid=document.getElementById('staffGrid');
-      try{
-        const data=await fetch('/api/staff').then(r=>r.json());
-        if(!data.tiers?.length&&!data.members?.length){grid.innerHTML='<div class="listings-empty">No staff data.</div>';return;}
-        window._guildIcon=data.guildIcon||null;
-        let html='',idx=0;
-        const tiers=data.tiers||[{name:'Staff',color:null,members:data.members||[]}];
-        for(const tier of tiers){
-          if(!tier.members?.length)continue;
-          const col=tier.color&&tier.color!=='#000000'?tier.color:'#5c85f5';
-          html+=`<div class="staff-section-title" style="color:${col}">${esc(tier.name||'Staff')}</div><div class="staff-grid">`;
-          for(const m of tier.members){
-            window._staffFlat[idx]={...m,tier:tier.name};
-            const rc=m.roleColor&&m.roleColor!=='#000000'?m.roleColor:col;
-            html+=`<div class="staff-card" data-idx="${idx}"><div class="staff-avatar-wrap"><img class="staff-avatar" src="${m.avatar||''}" alt="${esc(m.name||'')}" loading="lazy"/><div class="staff-status" style="background:${STATUS_COLORS[m.status||'offline']||'#80848e'}"></div></div><div class="staff-name">${esc(m.name||m.username||'')}</div><div class="staff-role" style="color:${rc}">${esc(m.role||tier.name)}</div></div>`;
+    async function loadStaff() {
+      const grid = document.getElementById('staffGrid');
+      try {
+        const data = await fetch('/api/staff').then(r => r.json());
+        // API returns data.staff (array of role groups), not data.tiers
+        const staffGroups = data.staff;
+        if (!staffGroups?.length) { grid.innerHTML = '<div class="listings-empty" style="padding:40px 0">No staff data.</div>'; return; }
+        window._guildIcon = data.guildIcon || null;
+        let html = '', idx = 0;
+        for (const group of staffGroups) {
+          if (!group.members?.length) continue;
+          const col = group.color && group.color !== '#000000' ? group.color : '#5c85f5';
+          html += `<div class="staff-section-title" style="color:${col}">${esc(group.name || 'Staff')}</div><div class="staff-grid">`;
+          for (const m of group.members) {
+            // Attach role info from the group since member objects don't carry it
+            window._staffFlat[idx] = { ...m, role: group.name, roleColor: group.color, tier: group.tier };
+            const status = m.status || 'offline';
+            const rc     = group.color && group.color !== '#000000' ? group.color : col;
+            html += `
+              <div class="staff-card" data-idx="${idx}">
+                <div class="staff-avatar-wrap">
+                  <img class="staff-avatar" src="${m.avatar || ''}" alt="${esc(m.name || '')}" loading="lazy" />
+                  <div class="staff-status" style="background:${STATUS_COLORS[status] || '#80848e'}"></div>
+                </div>
+                <div class="staff-name">${esc(m.name || m.username || '')}</div>
+                <div class="staff-role" style="color:${rc}">${esc(group.name)}</div>
+              </div>`;
             idx++;
           }
-          html+='</div>';
+          html += '</div>';
         }
-        grid.innerHTML=html;
-      }catch{grid.innerHTML='<div class="listings-empty">Could not load staff.</div>';}
+        grid.innerHTML = html;
+      } catch (err) { grid.innerHTML = '<div class="listings-empty" style="padding:40px 0">Could not load staff.</div>'; }
     }
     loadStaff();
 

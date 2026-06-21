@@ -373,15 +373,6 @@
       text-transform: uppercase; padding: 2px 8px;
       border-radius: 20px; margin-top: 6px; display: inline-block;
     }
-    .staff-section-title {
-      font-size: 11px; font-weight: 600; color: var(--blue);
-      text-transform: uppercase; letter-spacing: 1.5px;
-      padding: 24px 0 12px;
-      display: flex; align-items: center; gap: 10px;
-    }
-    .staff-section-title::after {
-      content: ''; flex: 1; height: 1px; background: var(--border);
-    }
 
     /* ── FAQ ── */
     .faq-list { display: flex; flex-direction: column; gap: 8px; }
@@ -566,7 +557,6 @@
     <div class="nav-center">
       <a href="/" class="active">Home</a>
       <a href="/bots">Bots</a>
-      <a href="/staff">Staff</a>
     </div>
     <div class="nav-right">
       <a class="btn-discord" href="https://discord.gg/GrowAlert" target="_blank" rel="noopener">
@@ -676,18 +666,6 @@
     </div>
   </div>
 
-  <!-- STAFF SECTION -->
-  <div class="section fade-up" id="staff-section">
-    <div class="section-header">
-      <div class="section-label">Team</div>
-      <div class="section-title">Meet the staff</div>
-      <div class="section-sub">Click any card to view their full profile.</div>
-    </div>
-    <div id="staffGrid">
-      <div class="listings-empty" style="padding:40px 0">Loading staff…</div>
-    </div>
-  </div>
-
   <!-- FAQ -->
   <div class="section fade-up">
     <div class="section-header">
@@ -713,7 +691,7 @@
       </div>
       <div class="faq-item">
         <div class="faq-q">Can I apply for staff? <span class="faq-chevron">▼</span></div>
-        <div class="faq-a">Yes! Check the <a href="/staff">Staff</a> page or watch for announcements in our Discord when applications are open.</div>
+        <div class="faq-a">Watch for announcements in our <a href="https://discord.gg/GrowAlert" target="_blank">Discord server</a> when applications are open.</div>
       </div>
     </div>
   </div>
@@ -727,54 +705,10 @@
     <div class="footer-links">
       <a href="/">Home</a>
       <a href="/bots">Bots</a>
-      <a href="/staff">Staff</a>
       <a href="https://discord.gg/GrowAlert" target="_blank">Discord</a>
     </div>
     <div class="footer-copy">© 2026 GrowAlert. All rights reserved.</div>
   </footer>
-
-  <!-- PROFILE OVERLAY -->
-  <div class="overlay" id="profileOverlay">
-    <div class="profile-modal" id="profileModal">
-      <div class="profile-banner" id="profileBannerBg">
-        <img class="profile-banner-img" id="profileBannerImg" src="" alt="" style="display:none" />
-        <button class="profile-close-btn" id="profileCloseBtn">✕</button>
-        <div class="profile-avatar-wrap">
-          <img class="profile-avatar" id="profileAvatar" src="" alt="" />
-          <img class="profile-deco" id="profileDecoration" src="" alt="" style="display:none" />
-          <div class="profile-status-dot" id="profileStatusDot"></div>
-        </div>
-      </div>
-      <div class="profile-body">
-        <div class="profile-name" id="profileName"></div>
-        <div class="profile-username" id="profileUsername"></div>
-        <div class="profile-role-badge" id="profileRoleBadge"></div>
-        <div class="profile-custom-status" id="profileCustomBubble" style="display:none">
-          <span id="profileCustomStatusEmoji"></span>
-          <span id="profileCustomStatus"></span>
-        </div>
-        <div id="profileAboutSection" style="display:none">
-          <div class="profile-section-title">About Me</div>
-          <div class="profile-bio" id="profileBio"></div>
-        </div>
-        <div class="profile-section-title">Member Since</div>
-        <div class="profile-dates">
-          <div class="profile-date-row">
-            <div class="profile-date-icon">🌐</div>
-            <div><span id="profileCreatedAt"></span><br><span style="font-size:11px">Discord</span></div>
-          </div>
-          <div class="profile-date-row" id="profileJoinedRow" style="display:none">
-            <div class="profile-date-icon" id="profileGuildIconWrap">🛡️</div>
-            <div><span id="profileJoinedAt"></span><br><span style="font-size:11px">GrowAlert</span></div>
-          </div>
-        </div>
-        <div class="profile-actions">
-          <button class="profile-action-btn" id="copyUsername">Copy Username</button>
-          <button class="profile-action-btn" id="copyUserId">Copy ID</button>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <div class="toast" id="toast"></div>
 
@@ -907,112 +841,7 @@
       return m ? m[1].trim() : null;
     }
 
-    // ── Staff ────────────────────────────────────────────────────────────
-    const STATUS_COLORS = { online: '#23a55a', idle: '#f0b232', dnd: '#f23f43', offline: '#80848e' };
-    const TIER_COLOR    = { owner: '#f5a524', dev: '#5c85f5', admin: '#eb459e', mod: '#5c85f5', staff: '#5c85f5', partner: '#1abc9c', default: '#5c85f5' };
-    window._staffFlat = [];
 
-    async function loadStaff() {
-      const grid = document.getElementById('staffGrid');
-      try {
-        const data = await fetch('/api/staff').then(r => r.json());
-        // API returns data.staff (array of role groups), not data.tiers
-        const staffGroups = data.staff;
-        if (!staffGroups?.length) { grid.innerHTML = '<div class="listings-empty" style="padding:40px 0">No staff data.</div>'; return; }
-        window._guildIcon = data.guildIcon || null;
-        let html = '', idx = 0;
-        for (const group of staffGroups) {
-          if (!group.members?.length) continue;
-          const col = group.color && group.color !== '#000000' ? group.color : '#5c85f5';
-          html += `<div class="staff-section-title" style="color:${col}">${esc(group.name || 'Staff')}</div><div class="staff-grid">`;
-          for (const m of group.members) {
-            // Attach role info from the group since member objects don't carry it
-            window._staffFlat[idx] = { ...m, role: group.name, roleColor: group.color, tier: group.tier };
-            const status = m.status || 'offline';
-            const rc     = group.color && group.color !== '#000000' ? group.color : col;
-            html += `
-              <div class="staff-card" data-idx="${idx}">
-                <div class="staff-avatar-wrap">
-                  <img class="staff-avatar" src="${m.avatar || ''}" alt="${esc(m.name || '')}" loading="lazy" />
-                  <div class="staff-status" style="background:${STATUS_COLORS[status] || '#80848e'}"></div>
-                </div>
-                <div class="staff-name">${esc(m.name || m.username || '')}</div>
-                <div class="staff-role" style="color:${rc}">${esc(group.name)}</div>
-              </div>`;
-            idx++;
-          }
-          html += '</div>';
-        }
-        grid.innerHTML = html;
-      } catch (err) { grid.innerHTML = '<div class="listings-empty" style="padding:40px 0">Could not load staff.</div>'; }
-    }
-    loadStaff();
-
-    // ── Profile popup ────────────────────────────────────────────────────
-    const overlay     = document.getElementById('profileOverlay');
-    const closeBtn    = document.getElementById('profileCloseBtn');
-    const toast       = document.getElementById('toast');
-    let currentMember = null;
-
-    function showToast(msg) {
-      toast.textContent = msg;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2000);
-    }
-    function fmtDate(iso) {
-      if (!iso) return '';
-      return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-    }
-    function openProfile(m) {
-      currentMember = m;
-      const rc = m.roleColor && m.roleColor !== '#000000' ? m.roleColor : '#5c85f5';
-      const bannerImg = document.getElementById('profileBannerImg');
-      const bannerBg  = document.getElementById('profileBannerBg');
-      if (m.banner) { bannerImg.src = m.banner; bannerImg.style.display = 'block'; bannerBg.style.background = ''; }
-      else { bannerImg.style.display = 'none'; bannerBg.style.background = `linear-gradient(135deg,${rc}88,${rc}22)`; }
-      document.getElementById('profileAvatar').src = m.avatar || '';
-      const deco = document.getElementById('profileDecoration');
-      if (m.decoration) { deco.src = m.decoration; deco.style.display = 'block'; } else deco.style.display = 'none';
-      document.getElementById('profileStatusDot').style.background = STATUS_COLORS[m.status || 'offline'] || '#80848e';
-      document.getElementById('profileName').textContent = m.name || '';
-      document.getElementById('profileUsername').textContent = '@' + (m.username || m.name || '');
-      const badge = document.getElementById('profileRoleBadge');
-      badge.textContent = m.role || m.tier || '';
-      badge.style.cssText = `background:${rc}22;color:${rc};border:1px solid ${rc}55`;
-      const bio = document.getElementById('profileAboutSection');
-      if (m.bio) { document.getElementById('profileBio').textContent = m.bio; bio.style.display = 'block'; } else bio.style.display = 'none';
-      const cs = m.customStatus;
-      const bubble = document.getElementById('profileCustomBubble');
-      if (cs && (cs.text || cs.emoji)) {
-        document.getElementById('profileCustomStatus').textContent = cs.text || '';
-        const emoji = document.getElementById('profileCustomStatusEmoji');
-        if (cs.emojiUrl) emoji.innerHTML = `<img src="${cs.emojiUrl}" style="width:14px;height:14px;object-fit:contain" />`;
-        else if (cs.emoji) emoji.textContent = cs.emoji;
-        else emoji.innerHTML = '';
-        bubble.style.display = 'flex';
-      } else bubble.style.display = 'none';
-      document.getElementById('profileCreatedAt').textContent = fmtDate(m.createdAt);
-      const joinRow = document.getElementById('profileJoinedRow');
-      if (m.joinedAt) {
-        document.getElementById('profileJoinedAt').textContent = fmtDate(m.joinedAt);
-        const iconWrap = document.getElementById('profileGuildIconWrap');
-        if (window._guildIcon) iconWrap.innerHTML = `<img src="${window._guildIcon}" style="width:16px;height:16px;border-radius:4px;object-fit:cover" />`;
-        joinRow.style.display = 'flex';
-      } else joinRow.style.display = 'none';
-      overlay.classList.add('open');
-    }
-    function closeProfile() { overlay.classList.remove('open'); currentMember = null; }
-
-    closeBtn.addEventListener('click', closeProfile);
-    overlay.addEventListener('click', e => { if (e.target === overlay) closeProfile(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeProfile(); });
-
-    document.getElementById('staffGrid').addEventListener('click', e => {
-      const card = e.target.closest('.staff-card');
-      if (!card) return;
-      const m = window._staffFlat[parseInt(card.dataset.idx)];
-      if (m) openProfile(m);
-    });
 
     document.getElementById('copyUsername').addEventListener('click', () => {
       if (!currentMember) return;
